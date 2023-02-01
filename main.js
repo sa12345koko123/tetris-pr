@@ -79,4 +79,83 @@ class Game {
     this.nextCanvas.style.border = "4px solid #555";
   }
 
+  // ゲーム開始の処理
+  start(){
+
+    // フィールドとドミノの初期化
+    this.field = new Field()
+
+    // 最初のドミノを読み込み
+    this.popMino()
+
+    // 初回描画
+    this.drawAll()
+
+    // 落下処理
+    clearInterval(this.timer)
+    this.timer = setInterval(() => this.dropMino(),100);
+
+    // キーボードイベントの登録
+    this.setKeyEvent()
+  }
+
+　　// 新しいドミノの読み込み
+  popMino(){
+    this.mino = this.nextMino ?? newMino()
+    this.mino.spawn()
+    this.nextMino = new Mino()
+
+    // ゲームオーバー判定
+    if(!this.valid(0, 1)){
+        this.drawAll()
+        clearInterval(this.timer)
+        alert("ゲームオーバー")
+    }
+  }
+
+  // 画面の描画
+  drawAll(){
+      // 表示クリア
+      this.mainCtx.clearRect(0, 0, SCREEN_W, SCREEN_H)
+      this.nextCtx.clearRect(0, 0, NEXT_AREA_SIZE, NEXT_AREA_SIZE)
+
+      // 落下済みのミノを描画
+      this.field.drawFixedBlocks(this.mainCtx)
+
+      // 再描画
+      this.nextMino.drawNext(this.nextCtx)
+      this.mino.draw(this.mainCtx)
+  }
+
+}
+
+
+
+
+
+
+
+
+// フィールドクラス
+class Field {
+  constructor (){
+    this.blocks = []
+  }
+  drawFixedBlocks(ctx){
+    this.blocks.forEach(block => block.draw(0, 0, ctx))
+  }
+  checkLine(){
+    for(var r = 0; r < ROWS_COUNT; r++){
+      var c = this.blocks.filter(block => block.y === r).length
+      if(c === COLS_COUNT){
+        this.blocks = this.blocks.filter(block => block.y !== r)
+        this.blocks.filter(block => block.y < r).forEach(upper => upper.y++)
+      }
+    }
+  }
+
+  has(x, y){
+      return this.blocks.some(block => block.x == x && block.y == y)
+  }
+
 }
