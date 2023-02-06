@@ -1,4 +1,4 @@
-const START_BTN_ID    ="start-btn"
+const SATRT_BTN_ID    ="start-btn"
 const MAIN_CANVAS_ID  ="main-canvas"
 const NEXT_CANVAS_ID  ="next-canvas"
 const GAME_SPEED      =500;
@@ -22,7 +22,7 @@ const BLOCK_SOURCES = [
 window.onload = function(){
   Asset.init()
   let game = new Game()
-  document.getElementById(START_BTN_ID).onclick = function(){
+  document.getElementById(SATRT_BTN_ID).onclick = function(){
     game.start()
     // ボタンのフォーカスを外す
     this.blur()
@@ -101,7 +101,7 @@ class Game {
 
 　　// 新しいドミノの読み込み
   popMino(){
-    this.mino = this.nextMino ?? newMino()
+    this.mino = this.nextMino ?? new Mino()
     this.mino.spawn()
     this.nextMino = new Mino()
 
@@ -144,6 +144,39 @@ class Game {
       this.drawAll();
   }
 
+  // 次の移動が可能か
+  valid(moveX, moveY, rot=0){
+    let newBlocks = this.mino.getNewBlocks(moveX, moveY, rot)
+    return newBlocks.every(block => {
+      return (
+          block.x >= 0 &&
+          block.y >= -1 &&
+          block.x < COLS_COUNT &&
+          block.y < ROWS_COUNT &&
+          !this.field.has(block.x, block.y)
+      )
+    })
+  }
+
+  setKeyEvent(){
+    document.onkeydown = function(e){
+      switch(e.keyCode){
+        case 37:
+          if(this.valid(-1,0)) this.mino.x--;
+          break;
+        case 39:
+          if(this.valid(1,0)) this.mino.x++;
+          break;
+        case 40:
+          if(this.valid(0,1)) this.mino.y++;
+          break;
+        case 32:
+          if(this.valid(0, 0, 1)) this.mino.rotate();
+          break;
+      }
+      this.drawAll()
+    }.bind(this)
+  }
 }
 
 
