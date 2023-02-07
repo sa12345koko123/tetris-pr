@@ -10,11 +10,11 @@
   left:400px;
 }
 
-/*#img-howto {*/
-/*  position: absolute;*/
-/*  bottom:200px;*/
-/*  left: 360px;*/
-/*}*/
+#img-howto {
+  position: absolute;
+  bottom:200px;
+  left: 360px;
+}
 
  #start-btn {
   position: absolute;
