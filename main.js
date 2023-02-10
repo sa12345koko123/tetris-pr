@@ -93,7 +93,7 @@ class Game {
 
     // 落下処理
     clearInterval(this.timer)
-    this.timer = setInterval(() => this.dropMino(),100);
+    this.timer = setInterval(() => this.dropMino(),500);
 
     // キーボードイベントの登録
     this.setKeyEvent()
